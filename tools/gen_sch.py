@@ -454,7 +454,7 @@ if __name__ == "__main__":
         if p["ref"] not in r["refs"]: r["refs"].append(p["ref"])
         if p["desc"] and p["desc"] not in r["note"]: r["note"] = (r["note"] + "; " + p["desc"]).strip("; ")
     def natkey(s): m = re.match(r"([A-Z]+)(\d+)", s); return (m.group(1), int(m.group(2)))
-    with open(os.path.join(OUT, "..", "BOM_BSPD.csv"), "w", newline="") as f:
+    with open(os.path.join(OUT, "..", "BOM_generated.csv"), "w", newline="") as f:
         w = csv.writer(f); w.writerow(["Qty", "References", "Value", "Footprint", "Primary part", "Alternative 1", "Alternative 2", "Notes"])
         for r in sorted(rows.values(), key=lambda r: natkey(sorted(r["refs"], key=natkey)[0])):
             refs = sorted(r["refs"], key=natkey)

@@ -15,4 +15,4 @@ a.axvline(827,color='r',lw=0.8); a.text(840,4.2,'SDC opens @ +327 ms, stays latc
 d2=load('s06_f_tw'); t2=[x*1000 for x in d2['time']]
 a=ax[2]; a.plot(t2,d2['v(tps)'],label='TPS (J7 signal unplugged @ 500 ms)'); a.plot(t2,d2['v(latch)'],label='LATCH'); a.plot(t2,d2['v(ok)'],label='OK'); a.axhline(4.75,ls=':',color='k',lw=0.7)
 a.set_xlim(300,900); a.set_xlabel('time (ms)'); a.set_ylabel('V'); a.set_title('Sensor signal disconnected (T 11.6.7 / T 11.9.2) -> SDC opens in 81 ms'); a.legend(loc='center right',fontsize=8)
-plt.tight_layout(); plt.savefig(f'{H}/../BSPD_simulation.png',dpi=130)
+plt.tight_layout(); plt.savefig(f'{H}/../docs/images/simulation.png',dpi=130)

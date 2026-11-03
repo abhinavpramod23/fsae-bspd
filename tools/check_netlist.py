@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Cross-check the KiCad-exported netlist against the intended design netlist + basic electrical rules."""
 import re, json, sys, os
-D = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "kicad")
+D = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "hardware", "kicad")
 net = open(os.path.join(D, "bspd.net")).read()
 exp = {k: set(v) for k, v in json.load(open(os.path.join(D, "expected_nets.json"))).items()}
 
