@@ -1,0 +1,38 @@
+Qty,References,Value,Footprint,Primary part,Alternative 1,Alternative 2,Notes
+1,C1,47uF 35V,CP_Elec_6.3x7.7,Panasonic EEE-FK1V470P,Nichicon UWT1V470MCL1GS,,"Bulk, aluminium electrolytic"
+12,C2 C3 C4 C6 C7 C8 C9 C11 C12 C13 C14 C15,100nF 50V,C_0603_1608Metric,Samsung CL10B104KB8NNNC,Murata GRM188R71H104KA93D,,U1 decoupling (place at pin 3); U2 decoupling (place at pin 3)
+1,C5,22uF 16V Tant,CP_EIA-3528-21_Kemet-B,KEMET T491B226K016AT,AVX TAJB226K016RNJ,,"LDO output cap: tantalum (ESR 0.1-1 ohm needed for LM2940 stability, NOT ceramic)"
+2,C10 C18,1uF 25V,C_0805_2012Metric,Samsung CL21B105KAFNNNE,Murata GRM21BR71E105KA99L,,To +5V (not GND): latch powers up in OK state
+1,C16,10nF,C_0603_1608Metric,Samsung CL10B103KB8NNNC,Murata GRM188R71H103KA01D,,10 nF (not 100 nF) so open-wiper fault trips < 100 ms
+1,C17,1uF 50V X7R,C_1206_3216Metric,Murata GRM31MR71H105KA88L,Samsung CL31B105KBHNNNE,TDK C3216X7R1H105K160AB,Timing cap (50 V X7R 1206 for low DC-bias loss)
+1,D1,SS34,D_SMA,SS34 (onsemi/MCC),B340A-13-F,SS36,"Reverse-polarity protection, 3 A 40 V"
+1,D2,SMBJ18A,D_SMB,Littelfuse SMBJ18A,Vishay SMBJ18A-E3/52,Littelfuse P6SMB22A,Unidirectional TVS 18 V stand-off (load-dump clamp)
+2,D3 D4,BAT54S,SOT-23,"Nexperia BAT54S,215",onsemi BAT54SLT1G,Diodes BAT54S-7-F,Input clamp
+2,D5 D6,1N4148W,D_SOD-123,Diodes Inc 1N4148W-7-F,onsemi MMSD4148T1G,"Nexperia 1N4148W,115",Latch hold diode; Coil flyback
+1,D7,GREEN BSPD OK,LED_0805_2012Metric,Kingbright APT2012SGC,Lite-On LTST-C171GKT,,On = relay closed
+1,D8,RED TRIPPED,LED_0805_2012Metric,Kingbright APT2012SURCK,Lite-On LTST-C171KRKT,,On = latched trip
+1,F1,0.5A,Fuse_1812_4532Metric,Bourns MF-MSMF050-2,Littelfuse 1812L050PR,,Resettable fuse 0.5 A hold
+1,J1,GLV_12V_IN,Molex_Micro-Fit_3.0_43650-0215_1x02_P3.00mm_Vertical,Molex 43650-0215,Molex 43650-0221,Any Micro-Fit 3.0 compatible vertical 2-pin,"GLV 12 V in (after GLVMS, NOT via SDC)"
+1,J2,BRK_SUPPLY,Molex_Micro-Fit_3.0_43650-0215_1x02_P3.00mm_Vertical,Molex 43650-0215,Molex 43650-0221,,MLH02KPSB06A supply: 1=+5V 2=GND
+1,J3,TPS_SUPPLY,Molex_Micro-Fit_3.0_43650-0215_1x02_P3.00mm_Vertical,Molex 43650-0215,Molex 43650-0221,,Throttle-body sensor 3382H-1-103 track: 1=CW end 2=CCW end
+1,J4,SDC,Molex_Micro-Fit_3.0_43650-0215_1x02_P3.00mm_Vertical,Molex 43650-0215,Molex 43650-0221,,In series with shutdown circuit
+1,J6,BRK_SIGNAL,Molex_Micro-Fit_3.0_43650-0215_1x02_P3.00mm_Vertical,Molex 43650-0215,Molex 43650-0221,,"MLH02KPSB06A output (separately disconnectable, T 11.6.7): 1=signal 2=shield"
+1,J7,TPS_SIGNAL,Molex_Micro-Fit_3.0_43650-0215_1x02_P3.00mm_Vertical,Molex 43650-0215,Molex 43650-0221,,"3382H wiper (separately disconnectable, T 11.6.7): 1=wiper 2=shield"
+1,K1,G5LE-1 DC12,Relay_SPDT_Omron-G5LE-1,Omron G5LE-1 DC12,Omron G5LE-14 DC12 (sealed),Omron G5LE-1-E DC12,SDC relay; uses COM(1)+NO(3) - closed only when healthy
+1,Q1,AO3400A,SOT-23,AOS AO3400A,Vishay Si2302CDS,Infineon IRLML6344,Relay driver
+8,R1 R4 R13 R14 R17 R18 R20 R27,1k,R_0603_1608Metric,Yageo RC0603FR-071KL,UNI-ROYAL 0603WAF1001T5E,Panasonic ERJ-3EKF1001V,Ref ladder (1 %); Pot top series (current limit + rail margin); Pot bottom series; CT discharge
+2,R2 R3,9.1k,R_0603_1608Metric,Yageo RC0603FR-079K1L,UNI-ROYAL 0603WAF9101T5E,Panasonic ERJ-3EKF9101V,
+4,R5 R11 R22 R25,100k,R_0603_1608Metric,Yageo RC0603FR-07100KL,UNI-ROYAL 0603WAF1003T5E,Panasonic ERJ-3EKF1003V,Latch-reference lag (power-up immunity); Pull-down: open wire -> 0 V -> fault; Fault filter ~70 ms
+1,R6,62k,R_0603_1608Metric,Yageo RC0603FR-0762KL,UNI-ROYAL 0603WAF6202T5E,Panasonic ERJ-3EKF6202V,"Limits RV1 max to 1.27 V = 26.4 bar nom., 28.4 bar worst case (T 11.6.5 <=30 bar)"
+1,R7,11k,R_0603_1608Metric,Yageo RC0603FR-0711KL,UNI-ROYAL 0603WAF1102T5E,Panasonic ERJ-3EKF1102V,
+1,R8,15k,R_0603_1608Metric,Yageo RC0603FR-0715KL,UNI-ROYAL 0603WAF1502T5E,Panasonic ERJ-3EKF1502V,
+1,R9,3.3k,R_0603_1608Metric,Yageo RC0603FR-073K3L,UNI-ROYAL 0603WAF3301T5E,Panasonic ERJ-3EKF3301V,
+1,R10,47R 1W,R_2512_6332Metric,Yageo RC2512FK-0747RL,Vishay CRCW251247R0FKEG,,Sensor-supply short protection
+3,R12 R16 R23,10k,R_0603_1608Metric,Yageo RC0603FR-0710KL,UNI-ROYAL 0603WAF1002T5E,Panasonic ERJ-3EKF1002V,
+2,R15 R19,470k,R_0603_1608Metric,Yageo RC0603FR-07470KL,UNI-ROYAL 0603WAF4703T5E,Panasonic ERJ-3EKF4703V,Pull-UP: open wiper/GND -> 5 V -> fault; Timer: 0.693*R19*C17 = 326 ms
+1,R21,1M,R_0603_1608Metric,Yageo RC0603FR-071ML,UNI-ROYAL 0603WAF1004T5E,Panasonic ERJ-3EKF1004V,
+1,R24,100R,R_0603_1608Metric,Yageo RC0603FR-07100RL,UNI-ROYAL 0603WAF1000T5E,Panasonic ERJ-3EKF1000V,
+1,R26,2.2k,R_0603_1608Metric,Yageo RC0603FR-072K2L,UNI-ROYAL 0603WAF2201T5E,Panasonic ERJ-3EKF2201V,
+2,RV1 RV2,10k 25T,Potentiometer_Bourns_3296W_Vertical,Bourns 3296W-1-103LF,Vishay T93YA103KT20,Suntan TSR-3296W-103,Hard-brake threshold trim 0.66-1.27 V = 5.6-26.4 bar; Throttle-body 20 % threshold trim 0.58-2.35 V
+2,U1 U2,LM2901,SOIC-14_3.9x8.7mm_P1.27mm,TI LM2901DR,onsemi LM2901DR2G,TI LM339ADR,"Quad comparator, automotive"
+1,U3,LM2940IMP-5.0,SOT-223-3_TabPin2,TI LM2940IMP-5.0/NOPB,TI LM2937IMP-5.0/NOPB,,5 V automotive LDO (reverse-battery & load-dump rated)

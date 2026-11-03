@@ -1,0 +1,122 @@
+[
+ [
+  "Power-up, idle, nominal",
+  "PASS",
+  "trip=None; Vlatch end=4.75"
+ ],
+ [
+  "Hard brake (40 bar), throttle idle",
+  "PASS",
+  "trip=None"
+ ],
+ [
+  "Full throttle, no brake",
+  "PASS",
+  "trip=None"
+ ],
+ [
+  "Brake+throttle overlap 200 ms",
+  "PASS",
+  "trip=None"
+ ],
+ [
+  "Brake+throttle continuous -> trip",
+  "PASS",
+  "trip delay=327 ms"
+ ],
+ [
+  "Stays latched after release",
+  "PASS",
+  "OK node end=0.14 V"
+ ],
+ [
+  "Fault: Brake signal wire open",
+  "PASS",
+  "trip delay=75.24103800000003 ms"
+ ],
+ [
+  "Fault: Brake 5V wire open",
+  "PASS",
+  "trip delay=68.75561500000005 ms"
+ ],
+ [
+  "Fault: Brake signal short GND",
+  "PASS",
+  "trip delay=68.74547399999997 ms"
+ ],
+ [
+  "Fault: Brake signal short 5V",
+  "PASS",
+  "trip delay=70.73112599999997 ms"
+ ],
+ [
+  "Fault: TPS wiper wire open",
+  "PASS",
+  "trip delay=81.31756000000001 ms"
+ ],
+ [
+  "Fault: TPS 5V wire open",
+  "PASS",
+  "trip delay=68.28251799999995 ms"
+ ],
+ [
+  "Fault: TPS GND wire open",
+  "PASS",
+  "trip delay=68.61305399999995 ms"
+ ],
+ [
+  "Fault: TPS signal short GND",
+  "PASS",
+  "trip delay=68.23706900000003 ms"
+ ],
+ [
+  "Fault: TPS signal short 5V",
+  "PASS",
+  "trip delay=68.35391899999999 ms"
+ ],
+ [
+  "20 ms wiring glitch rejected",
+  "PASS",
+  "trip=None"
+ ],
+ [
+  "Supply dip to 8.0 V (300 ms), no false latch",
+  "PASS",
+  "trip after recovery=None"
+ ],
+ [
+  "Supply dip to 7.0 V (300 ms), no false latch",
+  "PASS",
+  "trip after recovery=None"
+ ],
+ [
+  "Supply dip to 6.0 V (300 ms), no false latch",
+  "PASS",
+  "trip after recovery=None"
+ ],
+ [
+  "Supply 9.0 V: trips correctly",
+  "PASS",
+  "trip delay=327 ms"
+ ],
+ [
+  "Supply 16.0 V: trips correctly",
+  "PASS",
+  "trip delay=327 ms"
+ ],
+ [
+  "Power-up x40 (random offsets, worst-case UV output states, 0.2-50 ms ramps)",
+  "PASS",
+  "false trips=0"
+ ],
+ [
+  "Brake sensor 50 ms startup, no false trip",
+  "PASS",
+  "trip=None"
+ ],
+ [
+  "Monte-Carlo trip delay (30 runs)",
+  "PASS",
+  "min=256 ms max=350 ms"
+ ]
+]

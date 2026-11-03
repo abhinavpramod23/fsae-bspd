@@ -1,0 +1,38 @@
+# ---- Altium Designer ----
+History/
+__Previews/
+Project Logs for */
+Project Outputs for */
+*.PrjPcbStructure
+*.PrjPCBStructure
+*.SchDocPreview
+*.PcbDocPreview
+*.LibPkgStructure
+*.Annotation
+*.drc
+*.DRR
+*.LOG
+*.REP
+*.RUL
+*.htm
+*.html
+~$*
+*.bak
+*.$$$
+
+# ---- KiCad ----
+*-backups/
+*.kicad_prl
+fp-info-cache
+*.lck
+_autosave-*
+
+# ---- Simulation / Python ----
+simulation/runs/
+__pycache__/
+*.pyc
+
+# ---- OS ----
+.DS_Store
+Thumbs.db
+desktop.ini
