@@ -159,23 +159,23 @@ add("J2", "Connector_Generic:Conn_01x02", "BRK_SUPPLY", "MF2", {"1": "BRK_5V", "
     "Molex 43650-0215", "Molex 43650-0221", "", "MLH02KPSB06A supply: 1=+5V 2=GND")
 add("J6", "Connector_Generic:Conn_01x02", "BRK_SIGNAL", "MF2", {"1": "BRK_SIG_IN", "2": "GND"}, B,
     "Molex 43650-0215", "Molex 43650-0221", "", "MLH02KPSB06A output (separately disconnectable, T 11.6.7): 1=signal 2=shield")
-res("R10", "47R 1W", "+5V", "BRK_5V", B, fp="R2512", desc="Sensor-supply short protection", mpn="Yageo RC2512FK-0747RL", a1="Vishay CRCW251247R0FKEG")
+res("R10", "0R", "+5V", "BRK_5V", B, fp="R2512", desc="0R jumper: sensor supply direct from +5V (T 11.9.2 short-to-supply detection)", mpn="Yageo RC2512JK-070RL", a1="Vishay CRCW25120000Z0EG")
 cap("C13", "100nF", "BRK_5V", "GND", B)
 res("R11", "100k", "BRK_SIG_IN", "GND", B, desc="Pull-down: open wire -> 0 V -> fault")
 res("R12", "10k", "BRK_SIG_IN", "BRK", B)
 cap("C14", "100nF", "BRK", "GND", B)
-add("D3", "Diode:BAT54S", "BAT54S", "SOT23", {"1": "GND", "2": "+5V", "3": "BRK"}, B, "Nexperia BAT54S,215", "onsemi BAT54SLT1G", "Diodes BAT54S-7-F", "Input clamp")
+add("D3", "Diode:BAT54S", "BAV199", "SOT23", {"1": "GND", "2": "+5V", "3": "BRK"}, B, "Nexperia BAV199,215", "Infineon BAV199E6327", "Nexperia BAV99,215", "Low-leakage input clamp (open-wire detection at temperature)")
 add("J3", "Connector_Generic:Conn_01x02", "TPS_SUPPLY", "MF2", {"1": "TPS_5V", "2": "TPS_RTN"}, B,
     "Molex 43650-0215", "Molex 43650-0221", "", "Throttle-body sensor 3382H-1-103 track: 1=CW end 2=CCW end")
 add("J7", "Connector_Generic:Conn_01x02", "TPS_SIGNAL", "MF2", {"1": "TPS_SIG_IN", "2": "GND"}, B,
     "Molex 43650-0215", "Molex 43650-0221", "", "3382H wiper (separately disconnectable, T 11.6.7): 1=wiper 2=shield")
-res("R13", "1k", "+5V", "TPS_5V", B, desc="Pot top series (current limit + rail margin)")
+res("R13", "0R", "+5V", "TPS_5V", B, desc="0R jumper: pot top direct to +5V (T 11.9.2)", mpn="Yageo RC0603JR-070RL", a1="UNI-ROYAL 0603WAJ0000T5E")
 cap("C15", "100nF", "TPS_5V", "GND", B)
-res("R14", "1k", "TPS_RTN", "GND", B, desc="Pot bottom series")
+res("R14", "0R", "TPS_RTN", "GND", B, desc="0R jumper: pot bottom direct to GND (T 11.9.2)", mpn="Yageo RC0603JR-070RL", a1="UNI-ROYAL 0603WAJ0000T5E")
 res("R15", "470k", "+5V", "TPS_SIG_IN", B, desc="Pull-UP: open wiper/GND -> 5 V -> fault")
 res("R16", "10k", "TPS_SIG_IN", "TPS", B)
 cap("C16", "10nF", "TPS", "GND", B, desc="10 nF (not 100 nF) so open-wiper fault trips < 100 ms", mpn="Samsung CL10B103KB8NNNC", a1="Murata GRM188R71H103KA01D")
-add("D4", "Diode:BAT54S", "BAT54S", "SOT23", {"1": "GND", "2": "+5V", "3": "TPS"}, B, "Nexperia BAT54S,215", "onsemi BAT54SLT1G", "Diodes BAT54S-7-F", "Input clamp")
+add("D4", "Diode:BAT54S", "BAV199", "SOT23", {"1": "GND", "2": "+5V", "3": "TPS"}, B, "Nexperia BAV199,215", "Infineon BAV199E6327", "Nexperia BAV99,215", "Low-leakage input clamp (open-wire detection at temperature)")
 
 # ---- PLAUSIBILITY + 500 ms TIMER ----
 B = "LOGIC"

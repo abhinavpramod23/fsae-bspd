@@ -7,7 +7,7 @@ Qty,References,Value,Footprint,Primary part,Alternative 1,Alternative 2,Notes
 1,C17,1uF 50V X7R,C_1206_3216Metric,Murata GRM31MR71H105KA88L,Samsung CL31B105KBHNNNE,TDK C3216X7R1H105K160AB,Timing cap (50 V X7R 1206 for low DC-bias loss)
 1,D1,SS34,D_SMA,SS34 (onsemi/MCC),B340A-13-F,SS36,"Reverse-polarity protection, 3 A 40 V"
 1,D2,SMBJ18A,D_SMB,Littelfuse SMBJ18A,Vishay SMBJ18A-E3/52,Littelfuse P6SMB22A,Unidirectional TVS 18 V stand-off (load-dump clamp)
-2,D3 D4,BAT54S,SOT-23,"Nexperia BAT54S,215",onsemi BAT54SLT1G,Diodes BAT54S-7-F,Input clamp
+2,D3 D4,BAV199,SOT-23,"Nexperia BAV199,215",Infineon BAV199E6327,"Nexperia BAV99,215",Low-leakage input clamp (same pinout as BAT54S)
 2,D5 D6,1N4148W,D_SOD-123,Diodes Inc 1N4148W-7-F,onsemi MMSD4148T1G,"Nexperia 1N4148W,115",Latch hold diode; Coil flyback
 1,D7,GREEN BSPD OK,LED_0805_2012Metric,Kingbright APT2012SGC,Lite-On LTST-C171GKT,,On = relay closed
 1,D8,RED TRIPPED,LED_0805_2012Metric,Kingbright APT2012SURCK,Lite-On LTST-C171KRKT,,On = latched trip
@@ -20,14 +20,15 @@ Qty,References,Value,Footprint,Primary part,Alternative 1,Alternative 2,Notes
 1,J7,TPS_SIGNAL,Molex_Micro-Fit_3.0_43650-0215_1x02_P3.00mm_Vertical,Molex 43650-0215,Molex 43650-0221,,"3382H wiper (separately disconnectable, T 11.6.7): 1=wiper 2=shield"
 1,K1,G5LE-1 DC12,Relay_SPDT_Omron-G5LE-1,Omron G5LE-1 DC12,Omron G5LE-14 DC12 (sealed),Omron G5LE-1-E DC12,SDC relay; uses COM(1)+NO(3) - closed only when healthy
 1,Q1,AO3400A,SOT-23,AOS AO3400A,Vishay Si2302CDS,Infineon IRLML6344,Relay driver
-8,R1 R4 R13 R14 R17 R18 R20 R27,1k,R_0603_1608Metric,Yageo RC0603FR-071KL,UNI-ROYAL 0603WAF1001T5E,Panasonic ERJ-3EKF1001V,Ref ladder (1 %); Pot top series (current limit + rail margin); Pot bottom series; CT discharge
+6,R1 R4 R17 R18 R20 R27,1k,R_0603_1608Metric,Yageo RC0603FR-071KL,UNI-ROYAL 0603WAF1001T5E,Panasonic ERJ-3EKF1001V,Ref ladder (1 %); CT discharge; latch/LED
+2,R13 R14,0R,R_0603_1608Metric,Yageo RC0603JR-070RL,UNI-ROYAL 0603WAJ0000T5E,,0R jumpers: TPS pot directly across +5V/GND (T 11.9.2)
 2,R2 R3,9.1k,R_0603_1608Metric,Yageo RC0603FR-079K1L,UNI-ROYAL 0603WAF9101T5E,Panasonic ERJ-3EKF9101V,
 4,R5 R11 R22 R25,100k,R_0603_1608Metric,Yageo RC0603FR-07100KL,UNI-ROYAL 0603WAF1003T5E,Panasonic ERJ-3EKF1003V,Latch-reference lag (power-up immunity); Pull-down: open wire -> 0 V -> fault; Fault filter ~70 ms
 1,R6,62k,R_0603_1608Metric,Yageo RC0603FR-0762KL,UNI-ROYAL 0603WAF6202T5E,Panasonic ERJ-3EKF6202V,"Limits RV1 max to 1.27 V = 26.4 bar nom., 28.4 bar worst case (T 11.6.5 <=30 bar)"
 1,R7,11k,R_0603_1608Metric,Yageo RC0603FR-0711KL,UNI-ROYAL 0603WAF1102T5E,Panasonic ERJ-3EKF1102V,
 1,R8,15k,R_0603_1608Metric,Yageo RC0603FR-0715KL,UNI-ROYAL 0603WAF1502T5E,Panasonic ERJ-3EKF1502V,
 1,R9,3.3k,R_0603_1608Metric,Yageo RC0603FR-073K3L,UNI-ROYAL 0603WAF3301T5E,Panasonic ERJ-3EKF3301V,
-1,R10,47R 1W,R_2512_6332Metric,Yageo RC2512FK-0747RL,Vishay CRCW251247R0FKEG,,Sensor-supply short protection
+1,R10,0R,R_2512_6332Metric,Yageo RC2512JK-070RL,Vishay CRCW25120000Z0EG,,0R jumper: brake sensor supply direct from +5V (T 11.9.2)
 3,R12 R16 R23,10k,R_0603_1608Metric,Yageo RC0603FR-0710KL,UNI-ROYAL 0603WAF1002T5E,Panasonic ERJ-3EKF1002V,
 2,R15 R19,470k,R_0603_1608Metric,Yageo RC0603FR-07470KL,UNI-ROYAL 0603WAF4703T5E,Panasonic ERJ-3EKF4703V,Pull-UP: open wiper/GND -> 5 V -> fault; Timer: 0.693*R19*C17 = 326 ms
 1,R21,1M,R_0603_1608Metric,Yageo RC0603FR-071ML,UNI-ROYAL 0603WAF1004T5E,Panasonic ERJ-3EKF1004V,

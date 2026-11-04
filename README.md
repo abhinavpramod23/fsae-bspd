@@ -12,8 +12,8 @@ I kept the whole thing analog: comparators, an RC timer and a relay, with no mic
 
 ## What it does
 - Trips when **hard braking + more than 25 % throttle** last longer than **~327 ms**. The rule limit is 500 ms, and across component tolerances my worst case came out at 256–350 ms.
-- Detects **open, short-to-GND and short-to-5 V** on both sensor wires, and trips in about **70–80 ms**. Short glitches (under ~50 ms) are filtered out, so a bit of wiring noise won't kill the car.
-- **Latches** until the LVMS is power-cycled.
+- Detects **open, short-to-GND and short-to-supply** on both sensor wires, including the realistic case of the signal shorting to the sensor's *own* supply or return wire in the same cable. Trips in about **70–80 ms**. Short glitches (under ~50 ms) are filtered out, so a bit of wiring noise won't kill the car.
+- **Latches** until the LVMS is power-cycled. (One exception: if a sensor's *supply* wire shorts to GND, the 5 V rail collapses and the SDC opens immediately. If that short later clears by itself, the board powers back up instead of staying latched. A fully latched version needs a separately protected sensor supply, which is on the list for Rev C.)
 - **Fail-safe**: the SDC relay is only closed while the board is powered and healthy. Pull the 12 V or lose the 5 V and the SDC opens.
 - The **brake threshold can't be set above 30 bar**. The trimmer range itself is limited (5.6–26.4 bar, 28.4 bar worst case), so it can't be tuned out of the rule by mistake.
 - Uses its **own brake and throttle sensors**, so I never had to touch the Kawasaki ECU wiring.
@@ -27,7 +27,7 @@ I kept the whole thing analog: comparators, an RC timer and a relay, with no mic
 | T 11.6.4 | Only power, sensor and SDC interfaces | J1, J2/J6, J3/J7, J4 + bare test pads (no header) |
 | T 11.6.5 | Brake pressure sensor, threshold ≤ 30 bar, no wheel lock | MLH02K sensor, trimmer range capped at ≤ 28.4 bar |
 | T 11.6.7 | Each sensor signal wire separately disconnectable | Signal-only connectors J6 (brake) and J7 (throttle) |
-| T 11.9.2 | Open / short-GND / short-supply must go to the safe state | Window comparators at 0.25 V and 4.75 V |
+| T 11.9.2 | Open / short-GND / short-supply must go to the safe state | Window comparators at 0.25 V and 4.75 V; sensors powered straight from the 5 V rail (0 Ω links) so a short to the sensor's own supply/return lands outside the window; low-leakage clamps so open-wire detection still works hot |
 | CV 1.4.3 | Throttle position measured at the throttle body | 3382H sensor on the throttle shaft |
 | CV 4.1.1 / 4.1.3 | SDC drives relays; de-energised = open | Normally-open relay contact (K1) in series with the SDC |
 
@@ -38,12 +38,13 @@ Brake sensor ─► filter/clamp ─► U1A  brake > threshold ──┐
 Throttle sensor ─► filter/clamp ─► U1B  throttle > 20 % ─┤      │ wire fault (~70 ms)
                          └────► U2C/D window ───────────────────┤
                                                        ▼        ▼
-                         both true ─► RC timer (326 ms) ─► U1D ─► U1C latch ─► Q1 ─► K1 (SDC)
+                         both true ─► RC timer (326 ms) ─► U1C ─► U1D latch ─► Q1 ─► K1 (SDC)
 ```
 - **Power:** 12 V in → polyfuse → reverse-polarity diode → TVS → LM2940 5 V LDO. Every reference and both sensors run off the same 5 V, so the thresholds stay ratiometric.
 - **Thresholds:** two 25-turn trimmers (RV1 for brake, RV2 for throttle), plus a fixed divider for the fault limits and the 2.5 V timer/latch reference.
 - **Timer:** C17 only charges while *both* conditions are true. If either drops, it's discharged straight away.
-- **Latch:** once U1C trips, D5 holds it there. Nothing but a power cycle resets it.
+- **Latch:** once U1D trips, D5 holds it there. Nothing but a power cycle resets it.
+- **Sensor inputs:** each signal goes through a 10 k + cap filter and a BAV199 clamp. A pull-down (brake) or pull-up (throttle) drives an open wire into the fault window.
 - **Output:** AO3400A MOSFET → Omron G5LE relay. Green LED = OK, red LED = tripped.
 
 ## PCB
@@ -61,10 +62,13 @@ Throttle sensor ─► filter/clamp ─► U1B  throttle > 20 % ─┤      │ 
 ![3D top view](docs/images/pcb_3d_top.png)
 
 ## Simulation
-Before laying out the board, I ran the circuit through a behavioural ngspice test bench (`simulation/bspd_sim.py`) with **24 test cases, all passing**:
+Before laying out the board, I ran the circuit through a behavioural ngspice test bench (`simulation/bspd_sim.py`) with **33 test cases, all passing**:
 - normal operation, brake only, throttle only, and a 200 ms overlap (no trip)
 - the real trip (327 ms) and making sure it stays latched afterwards
 - all 9 sensor-wire faults (68–81 ms)
+- 5 harness shorts between a signal and its own sensor's supply/return wire (68–71 ms), across pot tolerance
+- a sensor supply wire shorted to GND (SDC opens straight away)
+- open-wire detection with hot clamp-diode leakage
 - supply dips down to 6 V, and 9 V / 16 V supply
 - 40 random power-ups to check it never false-trips at start-up
 - Monte-Carlo on the timer (256–350 ms)
@@ -89,6 +93,7 @@ Before laying out the board, I ran the circuit through a behavioural ngspice tes
 | 5 V LDO | TI LM2940IMP-5.0 | TI LM2937IMP-5.0 |
 | SDC relay | Omron G5LE-1 DC12 | G5LE-14 DC12, G5LE-1-E DC12 |
 | Relay driver | AO3400A | Si2302CDS, IRLML6344 |
+| Input clamps | Nexperia BAV199 (low leakage) | Infineon BAV199E6327, Nexperia BAV99 |
 | Brake pressure sensor | Honeywell MLH02KPSB06A (0–2000 psi, 0.5–4.5 V) | MLH01KPSB06A |
 | Throttle position sensor | Bourns 3382H-1-103 | Bosch 0 280 122 001, Piher PST360 |
 
@@ -96,13 +101,15 @@ The full list with every resistor and cap is in `hardware/BOM.csv`.
 
 ## Setting it up on the car
 1. **Brake threshold (RV1, measure at TP2):** `V = 0.5 V + 0.029 V/bar × P`. Set it below the pressure where the wheels start locking, and never above 30 bar.
-2. **Throttle threshold (RV2, measure at TP4):** `V = V_idle + 0.20 × (V_WOT − V_closed)`, using readings from TP3.
-3. Lock both trimmers with a dab of paint once they're set.
-4. Check it: hard brake + throttle → the SDC should open within 0.26–0.40 s and stay open until the LVMS is cycled.
-5. Unplug J6, then J7 → it should trip both times (this is what scrutineers check for T 11.6.7).
+2. **Throttle sensor mounting (check at TP3 first):** the voltage must **rise** as the throttle opens (swap the two end wires on J3 if it falls). Set the sensor's mechanical zero so the closed throttle reads about **0.6–1.5 V**, and make sure full throttle stays below **4.75 V**.
+3. **Throttle threshold (RV2, measure at TP4):** `V = V_idle + 0.20 × (V_WOT − V_closed)`, using readings from TP3. RV2 covers 0.58–2.35 V.
+4. Lock both trimmers with a dab of paint once they're set.
+5. Check it: hard brake + throttle → the SDC should open within 0.26–0.40 s and stay open until the LVMS is cycled.
+6. Unplug J6, then J7 → it should trip both times (this is what scrutineers check for T 11.6.7). Then short each signal pin to its sensor's supply pin and to GND → it should trip every time (T 11.9.2).
 
 ## Status
 - [x] Schematic + simulation
+- [x] Rev B.1 review: fixed undetected harness shorts (R10/R13/R14 → 0 Ω) and hot open-wire detection (D3/D4 → BAV199). BOM-only change, same PCB
 - [x] PCB layout and routing, DRC clean
 - [x] Gerbers generated
 - [ ] Fabrication

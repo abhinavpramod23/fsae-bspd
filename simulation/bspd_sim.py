@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Behavioural ngspice verification of the ZFR BSPD (Option A).
 Generates one netlist per scenario, runs ngspice in batch mode, parses results.
-Component values MUST match the KiCad schematic (see ../gen/netlist.py)."""
+Component values MUST match the KiCad schematic (see ../tools/gen_sch.py).
+Rev B.1: R10/R13/R14 = 0R, D3/D4 = BAV199 (low-leakage clamps)."""
 import subprocess, os, random, math, sys, json
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -40,9 +41,11 @@ def netlist(p):
     s.append(f"R6 P5 RV1T 62k\nRV1a RV1T BTH {10e3*(1-kb)+1}\nRV1b BTH RV1B {10e3*kb+1}\nR7 RV1B 0 11k\nC11 BTH 0 100n")
     s.append(f"R8 P5 RV2T 15k\nRV2a RV2T TTH {10e3*(1-kt)+1}\nRV2b TTH RV2B {10e3*kt+1}\nR9 RV2B 0 3.3k\nC12 TTH 0 100n")
     # ---- brake sensor interface  (J2: 1=BRK_5V 2=BRK_SIG 3=GND)
-    s.append("R10 P5 B5V 47\nC13 B5V 0 100n")
+    s.append("R10 P5 B5V 1m\nC13 B5V 0 100n")   # 0R jumper
     s.append("R11 BRAW 0 100k\nR12 BRAW BRK 10k\nC14 BRK 0 100n")
-    s.append("D3a 0 BRK dbat\nD3b BRK P5 dbat\n.model dbat D(is=1u n=1.05 rs=2)")
+    s.append("D3a 0 BRK dclp\nD3b BRK P5 dclp\n.model dclp D(is=2n n=1.8 rs=1)")   # BAV199 (Si, low leakage)
+    # extra clamp reverse leakage at temperature (worst case): lower diode drains TPS, upper diode feeds BRK
+    s.append(f"ILT TPS 0 {g('ileak', 20e-9)}\nILB P5 BRK {g('ileak', 20e-9)}")
     # harness wires with fault switches: sensor side nodes  SB5 (supply), SBO (output), SBG (gnd)
     s.append(f"VFB5 FB5 0 PWL({g('f_b5','0 1')})\nS_b5 B5V SB5 FB5 0 swm")      # supply wire open when ctrl=1 -> use inverted
     s.append(f"VFBO FBO 0 PWL({g('f_bo','0 1')})\nS_bo SBO BRAW FBO 0 swm")
@@ -55,9 +58,9 @@ def netlist(p):
     s.append(f"BSB SBX SBG V = (V(SB5,SBG)>4.0 ? 1:0) * (time>{g('bstart',5e-3)} ? 1:0) * (0.5+4*V(PBAR)/138)*V(SB5,SBG)/5")
     s.append("RSBO SBX SBO 100")
     # ---- TPS interface  (J3: 1=TPS_5V 2=TPS_SIG 3=TPS_GND)
-    s.append("R13 P5 T5V 1k\nC15 T5V 0 100n\nR14 TGND 0 1k")
+    s.append("R13 P5 T5V 1m\nC15 T5V 0 100n\nR14 TGND 0 1m")   # 0R jumpers
     s.append("R15 TRAW P5 470k\nR16 TRAW TPS 10k\nC16 TPS 0 10n")
-    s.append("D4a 0 TPS dbat\nD4b TPS P5 dbat")
+    s.append("D4a 0 TPS dclp\nD4b TPS P5 dclp")
     s.append(f"VFT5 FT5 0 PWL({g('f_t5','0 1')})\nS_t5 T5V ST5 FT5 0 swm")
     s.append(f"VFTW FTW 0 PWL({g('f_tw','0 1')})\nS_tw STW TRAW FTW 0 swm")
     s.append(f"VFTG FTG 0 PWL({g('f_tg','0 1')})\nS_tg STG TGND FTG 0 swm")
@@ -68,6 +71,9 @@ def netlist(p):
     s.append(f"VX XPOS 0 PWL({g('xpos','0 0.15')})")
     s.append(f"BPT ST5 STW I = V(ST5,STW)/({rp}*(1-V(XPOS))+1)")
     s.append(f"BPB STW STG I = V(STW,STG)/({rp}*V(XPOS)+1)")
+    # harness shorts between neighbouring wires of the same cable (T 11.9.2)
+    for key, a, b in (("x_bss", "BRAW", "SB5"), ("x_tss", "TRAW", "ST5"), ("x_tsr", "TRAW", "STG"), ("x_t5g", "ST5", "0"), ("x_b5g", "SB5", "0")):
+        s.append(f"V{key} N{key} 0 PWL({g(key, '0 0')})\nS{key} {a} {b} N{key} 0 swm")
     s.append("RLK1 ST5 0 1e9\nRLK2 STW 0 1e9\nRLK3 STG 0 1e9\nRLK4 SB5 0 1e9\nRLK5 SBO 0 1e9\nRLK6 SBG 0 1e9")
     # ---- comparators: U1 (A brake-hard, B tps-high, C timer, D latch), U2 (fault window)
     s.append(f"XU1A BRK BTH U1A P12 0 cmp vos={vos[0]} uv={uv[0]}")
@@ -176,6 +182,30 @@ if __name__ == "__main__":
         p[key] = sw
         col, d = run(p); t = analyse(col, d)
         rec("Fault: " + label, t is not None and 0.5 < t < 0.65, f"trip delay={(t-0.5)*1000 if t else None} ms")
+    # 6b. harness shorts to the sensor's OWN supply / return wire (neighbouring wires), pot tolerance 7k/13k
+    SW = "0 0 0.5 0 0.5001 1"
+    nb = [("x_bss", "Brake signal short to sensor supply wire", {})]
+    for rp in (7e3, 13e3):
+        nb += [("x_tss", f"TPS signal short to sensor supply wire (pot {rp/1e3:.0f}k)", dict(rpot=rp)),
+               ("x_tsr", f"TPS signal short to sensor return wire (pot {rp/1e3:.0f}k)", dict(rpot=rp))]
+    for i, (key, label, extra) in enumerate(nb):
+        p = dict(base, name=f"s06b_{key}_{i}", tstop=1.2, **extra); p[key] = SW
+        for k in ("f_bo", "f_b5", "f_bg", "f_tw", "f_t5", "f_tg"): p[k] = "0 1"
+        col, d = run(p); t = analyse(col, d)
+        rec("Fault: " + label, t is not None and 0.5 < t < 0.65 and latched_at_end(col, d), f"trip delay={(t-0.5)*1000 if t else None} ms")
+    # 6c. sensor supply wire short to GND: 5 V rail collapses -> SDC must open at once (safe state)
+    for key, label in (("x_t5g", "TPS supply wire short to GND"), ("x_b5g", "Brake supply wire short to GND")):
+        p = dict(base, name=f"s06c_{key}", tstop=1.0); p[key] = SW
+        for k in ("f_bo", "f_b5", "f_bg", "f_tw", "f_t5", "f_tg"): p[k] = "0 1"
+        col, d = run(p); t = analyse(col, d)
+        rec("Fault: " + label + " -> SDC opens", t is not None and 0.5 <= t < 0.52, f"open after={(t-0.5)*1000 if t is not None else None} ms")
+    # 6d. open-wire detection with hot clamp leakage (0.2 uA = 10x BAV199 worst case at 85 C)
+    for key, label in (("f_tw", "TPS wiper open"), ("f_bo", "Brake signal open")):
+        p = dict(base, name=f"s06d_{key}", tstop=1.2, ileak=0.2e-6)
+        for k in ("f_bo", "f_b5", "f_bg", "f_tw", "f_t5", "f_tg"): p[k] = "0 1"
+        p[key] = "0 1 0.5 1 0.5001 0"
+        col, d = run(p); t = analyse(col, d)
+        rec(f"Fault at temperature (clamp leak 0.2 uA): {label}", t is not None and 0.5 < t < 0.65, f"trip delay={(t-0.5)*1000 if t else None} ms")
     # 7. 20 ms glitch on brake signal (short to GND) -> must not trip
     p = dict(base, name="s07_glitch", f_bsg="0 0 0.5 0 0.5001 1 0.52 1 0.5201 0", tstop=1.2)
     for k in ("f_bo", "f_b5", "f_bg", "f_tw", "f_t5", "f_tg"): p[k] = "0 1"

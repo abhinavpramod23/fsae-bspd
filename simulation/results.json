@@ -32,47 +32,92 @@
  [
   "Fault: Brake signal wire open",
   "PASS",
-  "trip delay=75.24103800000003 ms"
+  "trip delay=75.80968399999999 ms"
  ],
  [
   "Fault: Brake 5V wire open",
   "PASS",
-  "trip delay=68.75561500000005 ms"
+  "trip delay=68.80680900000003 ms"
  ],
  [
   "Fault: Brake signal short GND",
   "PASS",
-  "trip delay=68.74547399999997 ms"
+  "trip delay=68.86194 ms"
  ],
  [
   "Fault: Brake signal short 5V",
   "PASS",
-  "trip delay=70.73112599999997 ms"
+  "trip delay=70.72114900000004 ms"
  ],
  [
   "Fault: TPS wiper wire open",
   "PASS",
-  "trip delay=81.31756000000001 ms"
+  "trip delay=81.870165 ms"
  ],
  [
   "Fault: TPS 5V wire open",
   "PASS",
-  "trip delay=68.28251799999995 ms"
+  "trip delay=68.224611 ms"
  ],
  [
   "Fault: TPS GND wire open",
   "PASS",
-  "trip delay=68.61305399999995 ms"
+  "trip delay=68.57781100000004 ms"
  ],
  [
   "Fault: TPS signal short GND",
   "PASS",
-  "trip delay=68.23706900000003 ms"
+  "trip delay=68.20109200000002 ms"
  ],
  [
   "Fault: TPS signal short 5V",
   "PASS",
-  "trip delay=68.35391899999999 ms"
+  "trip delay=68.357334 ms"
+ ],
+ [
+  "Fault: Brake signal short to sensor supply wire",
+  "PASS",
+  "trip delay=70.72338300000003 ms"
+ ],
+ [
+  "Fault: TPS signal short to sensor supply wire (pot 7k)",
+  "PASS",
+  "trip delay=68.35451999999998 ms"
+ ],
+ [
+  "Fault: TPS signal short to sensor return wire (pot 7k)",
+  "PASS",
+  "trip delay=68.20061899999996 ms"
+ ],
+ [
+  "Fault: TPS signal short to sensor supply wire (pot 13k)",
+  "PASS",
+  "trip delay=68.35810799999997 ms"
+ ],
+ [
+  "Fault: TPS signal short to sensor return wire (pot 13k)",
+  "PASS",
+  "trip delay=68.20112199999994 ms"
+ ],
+ [
+  "Fault: TPS supply wire short to GND -> SDC opens",
+  "PASS",
+  "open after=0.06038500000005165 ms"
+ ],
+ [
+  "Fault: Brake supply wire short to GND -> SDC opens",
+  "PASS",
+  "open after=0.06038500000005165 ms"
+ ],
+ [
+  "Fault at temperature (clamp leak 0.2 uA): TPS wiper open",
+  "PASS",
+  "trip delay=83.98425499999995 ms"
+ ],
+ [
+  "Fault at temperature (clamp leak 0.2 uA): Brake signal open",
+  "PASS",
+  "trip delay=76.33330299999996 ms"
  ],
  [
   "20 ms wiring glitch rejected",
