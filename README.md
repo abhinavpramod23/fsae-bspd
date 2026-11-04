@@ -77,7 +77,7 @@ Before laying out the board, I ran the circuit through a behavioural ngspice tes
 | `hardware/altium/` | Altium schematic + PCB |
 | `hardware/kicad/` | Original KiCad schematic and libraries (the starting point before Altium) |
 | `hardware/BOM.csv` | Full BOM with alternate part numbers for every part |
-| `fabrication/` | `bspd_rev_gerberfiles.zip`: Gerbers + plated / non-plated drill files, ready to upload to JLCPCB / PCBPower |
+| `fabrication/` | `bspd_gerber_files.zip`: Gerbers + plated / non-plated drill files, ready to upload to JLCPCB / PCBPower |
 | `docs/` | Schematic PDF and board images |
 | `simulation/` | ngspice test bench and results |
 | `tools/` | Python scripts I used to generate and cross-check the netlist |
